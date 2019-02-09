@@ -1,0 +1,2282 @@
+<?
+
+ 	$path = "/atmcdn/$client/"; // $client = dgAtm
+
+ 	$pathMJS = "/atmcdn/$client/";
+
+ 	error_reporting(0);
+
+  $urrl= base_url();
+
+  
+
+?>
+
+
+
+<!DOCTYPE html>
+
+<html class="no-js">
+
+  <head>
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>ATM</title>
+
+    <meta name="description" content="">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="robots" content="all,follow">
+
+    <!-- Bootstrap and Font Awesome css-->
+
+    <!-- we use cdn but you can also include local files located in css directory-->
+
+    
+
+    <link rel="stylesheet" href="<?=$path?>css/bootstrap.min.css">
+
+				<link rel="stylesheet" href="<?=$path?>css/style.css">
+
+    <!-- Favicon-->
+
+    <link rel="shortcut icon" href="<?=$path?>favicon.png">
+
+    
+
+    
+
+    <!--<script src="<?=$path?>js/jquery.js"></script>-->
+
+      
+
+    	<script>
+
+		
+
+
+
+			var LicKkey = '<? echo $licKey?>';
+
+			var AtmNAME = '<? echo $atmName?>';
+
+			var AtmID = '<? echo $atmID?>';
+
+			var clientID = '<? echo $clientID?>';
+
+			var URL = '<? echo $urrl?>';
+			
+			var IS_ACT = <?=$IS_ATM_ACTIVE?>;
+
+			//alert(LicKkey);
+
+			</script>
+
+    
+
+    
+
+    
+	<script src="<?=$path?>js/jquery_main.js"></script>
+    <script src="<?=$path?>js/main.js"></script>
+
+    <!--<script src="<?=$path?>js/main_java.js"></script>-->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+	<script src="js/js.cookie.js" charset="utf-8" type="text/javascript"></script>
+	<script src="js/jquery-lang.js" charset="utf-8" type="text/javascript"></script>
+	<!--<script src="js/langpack/nonDynamic.js" charset="utf-8" type="text/javascript"></script>-->
+	<script type="text/javascript">
+		var lang = new Lang();
+		
+		window.lang.dynamic('spa', 'js/langpack/spa.json');
+	
+		lang.init({
+			defaultLang: 'en'
+		});
+	</script>
+    
+
+    
+
+  
+
+    
+
+    <link rel="stylesheet" type="text/css" href="<?=$path?>keyboard/jquery.ml-keyboard.css">
+
+ 		 <script src="<?=$path?>keyboard/jquery.ml-keyboard.js"></script>
+
+    
+
+   	<style> #wrap { display: block; margin: 0 auto;}  </style>
+
+   	
+
+   	
+
+   			<style>
+
+					.loader {
+
+					  border: 16px solid #f3f3f3;
+
+					  border-radius: 50%;
+
+					  border-top: 16px solid #3498db;
+
+					  width: 120px;
+
+					  height: 120px;
+
+					  -webkit-animation: spin 2s linear infinite; /* Safari */
+
+					  animation: spin 2s linear infinite;
+
+					  left:50%;
+
+					  right:0%;
+
+					  top:25%;
+
+					  bottom:50%;
+
+					  position:absolute;
+
+					  
+
+					}
+
+					
+
+					/* Safari */
+
+					@-webkit-keyframes spin {
+
+					  0% { -webkit-transform: rotate(0deg); }
+
+					  100% { -webkit-transform: rotate(360deg); }
+
+					}
+
+					
+
+					@keyframes spin {
+
+					  0% { transform: rotate(0deg); }
+
+					  100% { transform: rotate(360deg); }
+
+					}
+
+</style>
+
+    
+
+
+
+    
+
+    <script>
+    
+    </script>
+
+    
+
+    
+
+			
+
+			
+
+				
+
+			<script src="http://localhost:8881/socket.io/socket.io.js"> </script>
+
+			<script>
+
+				var socket_local = io('localhost:8881',{reconnect: true});
+
+				
+
+
+
+						 //socket_local.emit('make_payment', {pay_amount: 10}); // 0 = Recycler/payout 1 = Cashbox
+
+						 // socket_local.emit('make_payment', {pay_amount: 20}); // 0 = Recycler/payout 1 = Cashbox
+
+						 
+
+						 
+
+					 //socket_local.emit('accept_cash', {target_x:0,for_adm:0});
+
+					 
+
+				//	 socket_local.emit('get_balance', {data: ''});
+
+					 
+					 
+
+		
+
+			</script>
+
+			  	 <? include "serverjs.php"; ?>
+
+		
+
+		
+
+		
+
+		<script>
+
+			
+
+			
+
+			
+
+		</script>
+
+		
+
+		   
+
+
+
+  </head>
+
+  <body>
+
+  	
+<div id="langChanger"><a href="#" id="eng" onclick="window.lang.change('en'); return false;">Switch to English</a> <a href="#"
+																											 id="spa"  onclick="window.lang.change('spa'); return false;">Switch
+	to Spanish</a></div>
+  	
+
+
+
+  	
+
+	<div class="clsWrapper">
+
+		
+
+
+
+		<!-----------------------------------*****SELECT PAYMENT OPTION IN DASHBOARD-------------------------------->
+
+		<div id="Slide_Home" style="display:block;">
+
+				<aside class="sidebar-left">
+
+					<div class="clsPAD30">
+
+						<div class="clsLogo clsPAD_BOT30"><a href=""><img class="<?=$path?>img-fluid" src="<?=$path?>images/logo.png" width="200"/></a></div>
+
+						<h1 class="clsPAD_BOT30" lang="en">What would <br/><b lang="en">you like to do?</b></h1>
+
+						<hr/>
+
+						<div class="clsPAD_BOT10"><a href="javascript:void(0);" onClick="LogicPay(1,0)"  class="btn btn-primary btn-block clsBTN1 btn-lg"><b lang="en">Buy</b></a></div>
+
+						<div class="clsPAD_BOT10"><a href="javascript:void(0);" onClick="LogicPay(2,0)"  class="btn btn-primary btn-block clsBTN1 btn-lg"><b lang="en">Sell</b></a></div>
+
+						<div class="clsPAD_BOT10"><a href="javascript:void(0);" onClick="LogicPay(3,0)"  class="btn btn-primary btn-block clsBTN1 btn-lg"><b lang="en">Redeem</b></a></div>
+
+						<div class="clsPAD_BOT10"><a href="javascript:void(0);" onClick="LogicPay(4,0)"  class="btn btn-primary btn-block clsBTN1 btn-lg"><b lang="en">LogiqPay</b></a></div>
+
+					</div>
+
+				</aside>
+
+				
+
+				<div class="content">
+
+					<div class="">
+
+						<div class="pp-section pp-table">
+
+							<div class="pp-tableCell">
+
+								<div class="container">
+
+									<div class="clsPAD_PER8">
+
+										
+
+										
+
+										<div class="row justify-content-md-center">
+
+											<div class="col-md-4" style="padding-top:10%">
+
+												<a href="javascript:void(0);"  ><img src="<?=$path?>images/Light_Pay.svg" class="img-fluid mx-auto d-block  " width="150"></a>
+
+												<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Light Pay</h5>
+
+											</div>
+
+											<div class="col-md-4">
+
+												<a href="javascript:void(0);"><img src="<?=$path?>images/Dash.svg" class="img-fluid mx-auto d-block" width="150"></a>
+
+												<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Dash</h5>
+
+											</div>
+
+											<div class="col-md-4" style="padding-top:10%">
+
+												<a href="javascript:void(0);"><img src="<?=$path?>images/Bicoin.svg" class="img-fluid mx-auto d-block" width="150"></a>
+
+												<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Bitcoin</h5>
+
+											</div>
+
+										</div>
+
+										<div class="row justify-content-md-center">
+
+											<div class="col-md-12">
+
+												<a href="javascript:void(0);"><img src="<?=$path?>images/coinlogic_gray.svg" class="img-fluid mx-auto d-block" width="200"></a>
+
+											</div>
+
+										</div>
+
+										<div class="row justify-content-md-center">
+
+											<div class="col-md-4">
+
+												<a href="javascript:void(0);"><img src="<?=$path?>images/Ether.svg" class="img-fluid mx-auto d-block" width="150"></a>
+
+												<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Ethereum</h5>
+
+											</div>
+
+											<div class="col-md-4" style="padding-top:10%">
+
+												<a href="javascript:void(0);"><img src="<?=$path?>images/Lite.svg" class="img-fluid mx-auto d-block" width="150"></a>
+
+												<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">LiteCoin</h5>
+
+											</div>
+
+											<div class="col-md-4">
+
+												<a href="javascript:void(0);"><img src="<?=$path?>images/Binance_Coin2.svg" class="img-fluid mx-auto d-block" width="150"></a>
+
+												<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Binance</h5>
+
+											</div>
+
+										</div>
+
+									</div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+		</div>
+
+		
+
+		<!-----------------------------------*****SELECT Crypto Currency-------------------------------->
+
+		<div id="Slide_cryptoCurrency" style="display:none;">
+
+			<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+			
+
+			
+
+			<aside class="sidebar-left">
+
+			<div class="clsPAD30">
+
+				<div class="clsLogo clsPAD_BOT30"><a href=""><img class="img-fluid" src="<?=$path?>images/logo.png" width="200"/></a></div>
+
+				<h1 class="clsPAD_BOT30" lang="en">Choose a<br/><b lang="en">Cryptocurrency</b></h1>
+
+				<hr/>
+
+				<p class="clsPAD_TOP30 clsTXT_GRY_DARC" lang="en" data-lang-token="para1">Coin Logiq was created to help prepare and empower the general population for mass acceptance and incorporate Bitcoin and other cryptocurrencies into daily life and business.</p>
+
+				<p class="clsPAD_TOP20 clsTXT_GRY_DARC" lang="en" data-lang-token="para2">We help entrepreneurs get ready to raise capital. Please note that we cannot help our clients raise capital. This usually consists of some or all of our services. This is a service that is heavily regulated.</p>
+
+				<hr/>
+
+				<p class="clsPAD30 clsTXT_GRY_DARC fixed-bottom">
+
+					<span><img src="<?=$path?>images/support_ico.png" width="40"/></span> Customer Support<br/> <b style="color:black;font-size:30px;">+1234567890</b>
+
+				</p>
+
+			</div>
+
+		</aside>
+
+		
+
+		<div class="content">
+
+			<div class="">
+
+				<div class="pp-section pp-table">
+
+					<div class="pp-tableCell">
+
+						<div class="container">
+
+							<div class="clsPAD_PER8">
+
+								<div class="row justify-content-md-center">
+
+									
+
+							
+
+									
+
+									<div class="col-md-4" style="padding-top:10%">
+
+										<a href="javascript:void(0);" onClick="LogicPay(5,0)"><img src="<?=$path?>images/Light_Pay.svg" class="img-fluid mx-auto d-block img_efct0 img_efct1" width="150"></a>
+
+										<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Light Pay</h5>
+
+									</div>
+
+									<div class="col-md-4">
+
+										<a href="javascript:void(0);" onClick="LogicPay(6,0)"><img src="<?=$path?>images/Dash.svg" class="img-fluid mx-auto d-block img_efct0 img_efct1" width="150"></a>
+
+										<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Dash</h5>
+
+									</div>
+
+									<div class="col-md-4" style="padding-top:10%">
+
+										<a href="javascript:void(0);" onClick="LogicPay(7,0)"><img src="<?=$path?>images/Bicoin.svg" class="img-fluid mx-auto d-block img_efct0 img_efct1" width="150"></a>
+
+										<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Bitcoin</h5>
+
+									</div>
+
+								</div>
+
+								<div class="row justify-content-md-center">
+
+									<div class="col-md-12">
+
+										<a href="javascript:void(0);" ><img src="<?=$path?>images/coinlogic.svg" class="img-fluid mx-auto d-block img_efct0 img_efct1" width="150"></a>
+
+									</div>
+
+								</div>
+
+								<div class="row justify-content-md-center">
+
+									<div class="col-md-4">
+
+										<a href="javascript:void(0);" onClick="LogicPay(9,0)"><img src="<?=$path?>images/Ether.svg" class="img-fluid mx-auto d-block img_efct0 img_efct1" width="150"></a>
+
+										<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Ethereum</h5>
+
+									</div>
+
+									<div class="col-md-4" style="padding-top:10%">
+
+										<a href="javascript:void(0);" onClick="LogicPay(10,0)"><img src="<?=$path?>images/Lite.svg" class="img-fluid mx-auto d-block img_efct0 img_efct1" width="150"></a>
+
+										<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">LiteCoin</h5>
+
+									</div>
+
+									<div class="col-md-4">
+
+										<a href="javascript:void(0);" onClick="LogicPay(11,0)"><img src="<?=$path?>images/Binance_Coin2.svg" class="img-fluid mx-auto d-block img_efct0 img_efct1" width="150"></a>
+
+										<h5 class="clsTXT_WHT clsPAD_TOP10 text-center" lang="en">Binance</h5>
+
+									</div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		
+
+			
+
+		
+
+		
+
+		</div>
+
+		
+
+		
+
+		<!-----------------------------------TERM AND CONDITOPN---------------------------->
+
+		<div id="Slide_TermCondition" style="display:none; overflow:auto;">
+
+			
+
+		<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+					
+
+				<div class="pp-section pp-table">
+
+					<div class="pp-tableCell">
+
+						<div class="container">
+
+								<div class="container1 clsPAD_IN20">
+
+							<div class="row">
+
+								<div class="col-md-12">
+
+									<div class="clsPAD_TOP15 text-white"><p><b lang="en">Coin Logiq was created</b></p></div>
+
+									<div class="clsPAD_TOP15 text-white"><p lang="en" data-lang-token="para1">Coin Logiq was created to help prepare and empower the general population for mass acceptance and incorporate Bitcoin and other cryptocurrencies into daily life and business.</p></div>
+
+									<div class="clsPAD_TOP15 text-white"><p lang="en" data-lang-token="para2">We help entrepreneurs get ready to raise capital. Please note that we cannot help our clients raise capital. This usually consists of some or all of our services. This is a service that is heavily regulated.</p></div>
+
+									
+
+									<div class="clsPAD_TOP30 text-white"><p><b lang="en">Coin Logiq was created</b></p></div>
+
+									<div class="clsPAD_TOP15 text-white"><p lang="en" data-lang-token="para1">Coin Logiq was created to help prepare and empower the general population for mass acceptance and incorporate Bitcoin and other cryptocurrencies into daily life and business.</p></div>
+
+									<div class="clsPAD_TOP15 text-white"><p lang="en" data-lang-token="para2">We help entrepreneurs get ready to raise capital. Please note that we cannot help our clients raise capital. This usually consists of some or all of our services. This is a service that is heavily regulated.</p></div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+						
+
+						<div class="container1 clsPAD_IN20 clsBRD_TOP_GRY clsBRD_BOT_GRY">
+
+							<div class="row">
+
+								<div class="col-md-6">
+
+									<div class="btn_img" style="padding:10px;" onClick="LogicPay(12,0)" ><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">I AGREE</button></div>
+
+								</div>
+
+								<div class="col-md-6">
+
+									<div class="btn_img" style="padding:10px;" onClick="LogicPay(13,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">I DISAGREE</button></div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			
+
+		</div>
+
+		
+
+			<!-----------------------------------USER INFORMATION---------------------------->
+
+			
+
+			
+
+			<div id="Slide_UserInformation" style="display:none;">
+
+				
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+				
+
+					<div class="pp-section pp-table">
+
+					<div class="pp-tableCell">
+
+						<div class="container">
+
+							
+
+							<div class="row" style="padding-top:40px;">
+
+								<div class="col-md-12" id="load_r_1" style="display:block;">
+
+									
+
+									<div class="clsPAD_TOP15 text-center">
+
+										<h1 class="text-white" lang="en">Enter Phone Number </h1>
+
+										<p>&nbsp;</p>
+
+										<h2>
+
+												<input type="text" class="form-control" name="enter_phone_number" id="enter_phone_number" placeholder="" onClick="openKeyboard(1);" pattern="[0-9]" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  style="padding:10px;border-radius:30px;height:50px;font-size:20px;font-weight:bold;border:3px solid #474747;text-align:center;">
+
+										</h2>
+
+										
+
+									  <br />
+
+										<h1 class="text-white" lang="en">Enter Email Address</h1>
+
+										<p>&nbsp;</p>
+
+										<h2>
+
+											<input type="text" class="form-control" name="enter_email_address" id="enter_email_address" placeholder="" onClick="openKeyboard(2);"     style="padding:10px;border-radius:30px;height:50px;font-size:20px;font-weight:bold;border:3px solid #474747;text-align:center;">
+
+										</h2>
+
+									</div>
+
+									
+
+						 	</div>
+
+							</div>
+
+							
+
+							<div class="row" style="padding-top:40px;">
+
+								<div class="col-md-4"></div>
+
+								<div class="col-md-4">
+
+									<a href="javascript:void(0);" style="padding:10px;text-decoration:none;" onClick="LogicPay(14,0)"><button type="button"  class="btn btn-danger btn-lg btn-block" lang="en">Next Step</button></a>
+
+								
+
+								
+
+								</div>
+
+								<div class="col-md-4"></div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+				</div>
+
+			
+
+		 <!-----------------------------------GET PERSONAL INFORMATION---------------------------->
+
+			
+
+			
+
+			<div id="Slide_PersonalInformation" style="display:none;">
+
+				
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+				
+
+					<div class="pp-section pp-table">
+
+					<div class="pp-tableCell">
+
+						<div class="container">
+
+							
+
+							<div class="row" style="padding-top:40px;">
+
+								<div class="col-md-12" id="load_r_1" style="display:block;">
+
+									
+
+									<div class="clsPAD_TOP15 text-center">
+
+										<h1 class="text-white" lang="en">Enter First Name </h1>
+
+										<p>&nbsp;</p>
+
+										<h2>
+
+											<input type="text" class="form-control" name="enter_firstname" id="enter_firstname" placeholder="" onClick="openKeyboard(3);"   style="padding:10px;border-radius:30px;height:50px;font-size:20px;font-weight:bold;border:3px solid #474747;text-align:center;">
+
+										</h2>
+
+										
+
+									  <br />
+
+										<h1 class="text-white" lang="en">Enter Last Name</h1>
+
+										<p>&nbsp;</p>
+
+										<h2>
+
+											<input type="text" class="form-control" name="enter_lastname" id="enter_lastname" placeholder="" onClick="openKeyboard(4);"   style="padding:10px;border-radius:30px;height:50px;font-size:20px;font-weight:bold;border:3px solid #474747;text-align:center;">
+
+										</h2>
+
+									</div>
+
+									
+
+						 	</div>
+
+							</div>
+
+							
+
+							<div class="row" style="padding-top:40px;">
+
+								<div class="col-md-4"></div>
+
+								<div class="col-md-4">
+
+									<a href="javascript:void(0);" style="padding:10px;text-decoration:none;" onClick="LogicPay(15,0)"><button type="button"  class="btn btn-danger btn-lg btn-block" lang="en">Get Security Code</button></a>
+
+								
+
+								
+
+								</div>
+
+								<div class="col-md-4"></div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+				</div>
+
+			
+
+			
+
+			
+
+			<!---------------------------INSERT SECURITY CODE---------------------------->
+
+			
+
+				<div id="Slide_InsertSecurityCode"style="display:none;">
+
+					
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+					
+
+					
+
+					<div class="pp-section pp-table">
+
+					<div class="pp-tableCell">
+
+						<div class="container">
+
+							
+
+							<div class="row" style="padding-top:40px;">
+
+								<div class="col-md-12" id="load_r_1" style="display:block;">
+
+									
+
+									<div class="clsPAD_TOP15 text-center">
+
+										<h1 class="text-white" lang="en">Enter Security Code </h1>
+
+										<p>&nbsp;</p>
+
+										<h2><input type="text" class="form-control" name="enter_security_code" id="enter_security_code" placeholder="" onClick="openKeyboard(5);"  style="padding:10px;border-radius:30px;height:50px;font-size:20px;font-weight:bold;border:3px solid #474747;text-align:center;">
+
+										
+
+								
+
+												
+
+										</h2>
+
+									<br />
+
+									</div>
+
+							 </div>
+
+							</div>
+
+							
+
+							<div class="row" style="padding-top:40px;">
+
+								<div class="col-md-4"></div>
+
+								<div class="col-md-4">
+
+									<a  id="received_verify_b" style="padding:10px;" onClick="LogicPay(16,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Submit</button></a>
+
+								
+
+								
+
+								</div>
+
+								<div class="col-md-4"></div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+				</div>
+
+			
+
+			
+
+				<!---------------------------SCAN ID ---------------------------->
+
+			
+
+			
+
+				<div id="Slide_ScanID"style="display:none;">
+
+					
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+					
+
+					<div class="pp-section pp-table">
+
+					<div class="pp-tableCell">
+
+						<div class="container">
+
+							
+
+							<div class="row" style="padding-top:20px;">
+
+								<div class="col-md-12" id="load_r_1" style="display:block;">
+
+									
+
+									<div class="clsPAD_TOP15 text-center">
+
+										<h1 class="text-white" lang="en">Scan your ID by placing it in front of the camera </h1>
+
+										<br />
+
+										
+
+									</div>
+
+									<div class="row" style="padding-top:40px;">
+
+								<div class="col-md-12">
+
+									<table width = "100%" >
+
+								  		<tr class="text-center"><td class="text-center"> <img src="" id="xkyc" width="640" height="360" style="display:block;"> </td></tr>
+
+								  		
+
+								  		<tr class="text-center"><td class="text-center">  <a href="javascript:void(0)" onclick = "take_kyc()" id="xtake_pic" class="btn btn-info btn-lg text-right" style="" lang="en"> Take Pic </a></td> <td class="text-center"><a href="javascript:void(0)" id="xcontinue"  style="display:none;"  onClick="LogicPay(17,0)" class="btn btn-danger btn-lg" lang="en"> Continue  </a></td></tr>
+
+								  	
+
+								  </table>
+
+  
+
+  						</div>
+
+  						</div>
+
+									
+
+									
+
+							 </div>
+
+							</div>
+
+							
+
+						
+
+						</div>
+
+					</div>
+
+				</div>
+
+				</div>
+
+				
+
+				
+
+				<!---------------------------DO YOU HAVE WALLET ADDRESS ---------------------------->
+
+			
+
+			
+
+			<div id="Slide_WalletAskAddress"style="display:none;">
+
+				
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+				
+
+				
+
+					<div class="pp-section pp-table">
+
+					<div class="pp-tableCell">
+
+						<div class="container">
+
+							
+
+								<div class="row" style="padding-top:40px;">
+
+								<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 id="ask_wallet" lang="en">Do you have BitCoin Wallet?</h4></div></div>
+
+							</div>
+
+								<div class="row" style="padding-top:40px;">
+
+							  <div class="col-md-2"></div>
+
+								<div class="col-md-4"><div class="btn_img" style="padding:10px;" onClick="LogicPay(18,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Yes</button></div></div>
+
+								<div class="col-md-4">
+
+									<div class="btn_img" style="padding:10px;" onClick="LogicPay(19,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">No</button></div>
+
+								</div>
+
+							  <div class="col-md-2"></div>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+				</div>
+
+			
+
+			<!---------------------------SELECT CASH ---------------------------->
+
+			
+
+				<div id="Slide_SelectCash"style="display:none;">
+
+					<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+					
+
+					<div class="row" >
+
+						<div class="col-md-12"><div class="clsPAD_TOP15 text-center"><h1><b style="color:#ff0000;" lang="en">Insert Cash</b></h1></div></div>
+
+						<div class="col-md-12">
+
+								<div class="clsPAD_TOP15 text-center">
+
+									<h2>
+
+									<b id=""></b>
+
+								</h2>
+
+								</div>
+
+						</div>
+
+						
+
+					</div>
+
+			
+
+					
+
+					<div class="container clsPAD_IN20 clsBRD_TOP_GRY clsBRD_BOT_GRY">
+
+						<div class="row" style="padding-top:150px;">
+
+				 	<div class="col-md-1">
+
+				 	</div>
+
+						<input type="hidden" name="currency_value" id="currency_value" value=""  />
+						
+
+						<div class="col-md-2" id="display_10" style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(74,10)"><button type="button" class="btn btn-danger btn-lg btn-block">10</button></div>
+
+						</div>
+
+						<div class="col-md-2"  id="display_20"  style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(75,20)" ><button type="button" class="btn btn-danger btn-lg btn-block">20</button></div>
+
+						</div>
+
+						<div class="col-md-2"  id="display_30"  style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(76,30)"><button type="button" class="btn btn-danger btn-lg btn-block">30</button></div>
+
+						</div>
+
+						<div class="col-md-2"  id="display_50"  style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(77,50)" ><button type="button" class="btn btn-danger btn-lg btn-block">50</button></div>
+
+						</div>
+
+						<div class="col-md-2"  id="display_100"  style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(78,100)"><button type="button" class="btn btn-danger btn-lg btn-block">100</button></div>
+
+						</div>
+
+						<div class="col-md-1">
+
+				 	</div>
+
+						
+
+					</div>
+
+				</div>
+
+					
+
+				</div>
+
+				
+
+					<!---------------------------CASH LOADER--------------------------->
+
+			
+
+			<div id="Slide_CashLoader"style="display:none;">
+
+				
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+				
+
+				
+
+				
+
+				<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 lang="en">Please Insert Cash in cashbox</h4></div></div>
+
+				</div>
+
+				
+
+				
+
+				
+
+					<div class="col-md-12" id="load_cash_insert" style="display:none;">
+
+										<div class="text-center">
+
+											<div class="loader" ></div>
+
+										</div>
+
+									</div>
+
+									
+
+									<br />
+
+									
+
+				<!--<div class="row" style="padding-top:40px;">-->
+
+				<!--	<div class="col-md-4"></div>-->
+
+				<!--	<div class="col-md-4">-->
+
+				<!--		<div class="btn_img" style="padding:10px;" onClick="LogicPay(81,0)"><button type="button" class="btn btn-danger btn-lg btn-block">PROCEED</button></div>-->
+
+				<!--	</div>-->
+
+				<!--	<div class="col-md-4"></div>-->
+
+				<!--</div>-->
+
+				
+
+				
+
+				</div>
+
+				
+
+				<!---------------------------SCAN QR CODE--------------------------->
+
+			
+
+				<div id="Slide_ScanWalletAddress"style="display:none;">
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+					
+
+				
+
+				<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 lang="en">Scan your Wallet QR code </h4></div></div>
+
+				</div>
+
+				
+
+				<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 id="Scan_Wallet_address"></h4></div></div>
+
+				</div>
+
+				
+
+				<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(91,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">SCAN YOUR Wallet Address</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+				
+
+			</div>
+
+			
+
+			<!---------------------------Display Total Amount or Wallet For Buy--------------------------->
+
+		<div id="Slide_DisplayTotalAmountOrScan"style="display:none;">
+
+					<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+				
+
+				<div class="row" style="padding-top:100px;">
+
+					<input type="hidden" id="hidden_total_cash_value" name="hidden_total_cash_value" value=""  />
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 id="total_amount_to_deposit"> </h4></div></div>
+
+				</div>
+
+				
+
+				<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 id="Scan_user_buy_wallet_address"></h4></div></div>
+
+				</div>
+
+				
+
+					<div class="col-md-12">
+
+							<div class="clsPAD30 text-center">
+
+								<img src="" id="BUY_user_wallet_qr_code">
+
+							</div>
+
+						</div>
+
+						
+
+					
+
+					<div class="row" style="padding-top:100px;">
+
+							<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 id="Buy_transaction_id"></h4></div></div>
+
+				</div>
+
+				
+
+				
+
+				<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(25,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Print</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+				
+
+			</div>
+
+	
+
+			<!---------------------------CREATE WALLETE--------------------------->
+
+			
+
+			<div id="Slide_CreateWallete"style="display:none;">
+
+				
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+				
+
+				
+
+				
+
+				<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 lang="en">We can create a new wallet for you!</h4></div></div>
+
+				</div>
+
+				<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(24,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">CREATE WALLET</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+				
+
+			</div>
+
+		
+
+			<!---------------------------NEW WALLETE CREATE--------------------------->
+
+			
+
+				<div id="Slide_NewWalletCreate"style="display:none;">
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+					
+
+					
+
+					
+
+					<div class="row" style="padding-top:40px;">
+
+						
+
+						
+
+									<div class="col-md-12">
+
+											<div class="clsPAD_TOP15 text-center">
+
+												<h2>
+
+												<b class="text-white" id="new_wallet_create"></b>
+
+											</h2>
+
+											</div>
+
+									</div>
+
+				
+
+									<div class="col-md-12">
+
+										<div class="clsPAD30 text-center">
+
+											<img src="" id="qu_code">
+
+										</div>
+
+									</div>
+
+
+
+
+
+				</div>
+
+					<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+						<div class="btn_img" style="padding:10px;" onClick="LogicPay(25,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">GET PRINT</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+				
+
+				</div>
+
+				
+
+				
+
+				<!---------------------------PRINT FINAL WALLET AMD ADDRESS--------------------------->
+
+			
+
+			<div id="Slide_PrintFinalWallet"style="display:none;">
+
+				
+
+			<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+				
+
+				
+
+			
+
+			<div class="row" style="padding-top:40px;">
+
+					<!--<div class="col-md-12"><div class="clsPAD30 text-center"><h4 id="currency_tt">Your Bitcoin Amount</h4></div></div>-->
+
+						
+
+					<div class="col-md-12"><div class="clsPAD30 text-center"><h3 id="final_amount"></h3></div></div>
+
+					
+
+						<div class="col-md-12"><div class="clsPAD30 text-center"><img src="" id="qu_code1"></div></div>
+
+					
+
+				</div>
+
+				<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+						<div class="btn_img" style="padding:10px;" onClick="LogicPay(25,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Print</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+			
+
+			</div>
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			<!--=====================================For SELL==========================================>
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+			
+
+				<!---------------------------SELLES SELL COINS--------------------------->
+
+				
+
+				<div id="Slide_SellCoins"style="display:none;">
+
+					<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+					
+
+					<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 lang="en">Select the amount you would like to withdraw:</h4></div></div>
+
+				</div>
+
+			
+
+			<div class="row" style="padding-top:150px;">
+
+				 	<div class="col-md-2">
+
+				 	</div>
+
+						<div class="col-md-1" id="sell_display_10" style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(31,10)" ><button type="button" class="btn btn-danger btn-lg btn-block">10</button></div>
+
+						</div>
+
+						<div class="col-md-1" id="sell_display_20" style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(32,20)"><button type="button" class="btn btn-danger btn-lg btn-block">20</button></div>
+
+						</div>
+
+						<div class="col-md-1" id="sell_display_50" style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(33,50)" ><button type="button" class="btn btn-danger btn-lg btn-block">50</button></div>
+
+						</div>
+
+						<div class="col-md-1" id="sell_display_100" style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(34,100)"><button type="button" class="btn btn-danger btn-lg btn-block">100</button></div>
+
+						</div>
+
+						<div class="col-md-1" id="sell_display_200" style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(35,200)" ><button type="button" class="btn btn-danger btn-lg btn-block">200</button></div>
+
+						</div>
+
+						<div class="col-md-1" id="sell_display_300" style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(36,300)"><button type="button" class="btn btn-danger btn-lg btn-block">300</button></div>
+
+						</div>
+
+						<div class="col-md-1" id="sell_display_500" style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(37,500)" ><button type="button" class="btn btn-danger btn-lg btn-block">500</button></div>
+
+						</div>
+
+						<div class="col-md-1" id="sell_display_1M" style="display:none;">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(38,1000)"><button type="button" class="btn btn-danger btn-lg btn-block">1M</button></div>
+
+						</div>
+
+						<div class="col-md-2">
+
+				 	</div>
+
+						
+
+					</div>
+
+			
+
+			</div>
+
+			
+				<!---------------------------NEW WALLETE CREATE for SEll--------------------------->
+
+				
+
+				<div id="Slide_SellNewWalletCreate"style="display:none;">
+
+				
+
+			<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+				
+
+				
+
+				
+
+				<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 lang="en">We can create a new wallet for Sell!</h4></div></div>
+
+				</div>
+
+				<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(111,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">CREATE NEW WALLET FOR SELL</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+				
+
+			</div>
+
+			
+
+			<!---------------------------PRINT FINAL WALLET AMD ADDRESS--------------------------->
+
+			
+
+			<div id="Slide_SellNewWalletCreatePrint"style="display:none;">
+
+					<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+					
+
+					
+
+					
+
+					<div class="row" style="padding-top:40px;">
+
+						
+
+						
+
+									<div class="col-md-12">
+
+											<div class="clsPAD_TOP15 text-center">
+
+												<h2>
+
+												<b class="text-white" id="new_Sellwallet_create"></b>
+
+											</h2>
+
+											</div>
+
+									</div>
+
+				
+
+									<div class="col-md-12">
+
+										<div class="clsPAD30 text-center">
+
+											<img src="" id="qu_Sell_code">
+
+										</div>
+
+									</div>
+
+
+
+
+
+				</div>
+
+					<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+						<div class="btn_img" style="padding:10px;" onClick="LogicPay(25,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Next</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+				
+
+				</div>
+
+			
+
+			<!---------------------------FINAL STEP FOR ATM--------------------------->
+
+			
+
+			<div id="Slide_FinalStep"style="display:none;">
+
+				
+<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+			
+				<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 lang="en">Successful Transaction!</h4></div></div>
+
+				</div>
+
+			<div class="row" style="padding-top:150px;">
+
+						<div class="col-md-3">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(41,1000)" ><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Print Receipt</button></div>
+
+						</div>
+
+						<div class="col-md-3">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(27,500)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Email Receipt</button></div>
+
+						</div>
+
+						<div class="col-md-3">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(28,200)" ><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">I don't need a receipt</button></div>
+
+						</div>
+
+						<div class="col-md-3">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(29,100)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Cancel</button></div>
+
+						</div>
+
+					</div>
+
+			
+
+			</div>
+
+			
+
+			<!---------------------------SCAN QR CODE--------------------------->
+
+			
+
+				<div id="Slide_ScanQRCode"style="display:none;">
+
+				<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+					
+
+				
+
+				<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 lang="en">Scan your redemption QR Code</h4></div></div>
+
+				</div>
+
+				
+
+			
+
+				<div class="row" style="padding-top:10px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 id="qr_code_amount"></h4></div></div>
+
+				</div>
+
+				
+
+				<div class="row" style="padding-top:10px;">
+
+					<div class="col-md-12" id="redeem_loader_get_data" style="display:block;">
+
+							<div class="text-center">
+
+								<div class="loader" ></div>
+
+							</div>
+
+						</div>
+
+				</div>
+
+				
+
+				
+
+				<div class="row" style="padding-top:10px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 id="redemption_amount" style="display:none;"></h4></div></div>
+
+				</div>
+
+				
+
+				<div class="row" style="padding-top:10px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 id="redemption_message" style="display:none;"></h4></div></div>
+
+				</div>
+
+				
+
+				<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+							<div class="btn_img" style="padding:10px; display:none;" onClick="LogicPay(42,0)" id="redem_process"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">PROCEED</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+
+			</div>
+
+
+			<!---------------------------SCAN QR CODE--------------------------->
+
+			
+
+			<div id="Slide_SellFinalAmountToSend"style="display:none;">
+
+				
+<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+
+		
+
+			<div class="row" style="padding-top:20px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h3 id="SELL_final_amount"></h3></div></div>
+
+					
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white">
+
+						<h3 id="SELL_client_wallet"></h3></div></div>
+
+					
+
+						<div class="col-md-12"><div class="clsPAD30 text-center"><img src="" id="SELL_qu_code1"></div></div>
+
+						
+
+			</div>
+
+		
+
+			<div class="row" style="padding-top:20px;">
+
+					<div class="col-md-12" id="redeem_load_cash_insert" style="display:block;">
+
+						<div class="text-center">
+
+							<div class="loader" ></div>
+
+						</div>
+
+					</div>
+
+					
+
+				<div class="col-md-12" style="display:none;"><div class="clsPAD30 text-center text-white">
+
+					<h3 id="SELL_display_redeem_code"></h3></div>
+				</div>
+				
+					<div class="col-md-12" style="display:none;" id="show_sell_redeem_code_image_div"><div class="clsPAD30 "><img src="" id="SELL_display_redeem_qr_code"></div></div>
+				
+					<div class="col-md-12" style="display:none;" id="show_sell_redeem_code_transaction_div"><div class="clsPAD30 text-center text-white">	<h3 id="SELL_display_transaction_id"></h3></div></div>
+
+					
+
+				<div class="col-md-12" style="display:none;"><div class="clsPAD30 text-center"><img src="" id="SELL_display_redeem_qr_code"></div></div>
+
+						
+
+			</div>
+
+			
+			
+
+			<div class="row" style="padding-top:40px;">
+
+						<div class="col-md-12"><div class="clsPAD30 text-center text-white">
+
+							<h3 style="color:red;" lang="en">WARNING</h3>
+
+							<h4 lang="en" data-lang-token="para3">You MUST send the exact amount to the address shown on screen. We are not responsible for funds sent to a different address or if you send more or  less crypto than what’s on the screen. </h4>
+
+							<h4 lang="en" data-lang-token="para4">We recommend that you do not use an Exchange to send funds to this address as your exchange would normally take longer (Sometimes hours) to complete the transaction.  </h4>
+
+							</div></div>
+
+			</div>
+
+
+				<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+						<div class="btn_img" style="padding:10px; display:none;" onClick="LogicPay(25,0)" id="sell_process"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Process</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+				
+
+			</div>
+
+		
+
+				<!---------------------------CASH WITHDRAW MESSAGE--------------------------->
+
+				
+
+			<div id="Slide_WithdrawCashMessage"style="display:none;">
+
+				
+<div style="padding:10px;position:absolute;top:0;right:0;z-index:9999;" >
+				
+				<a href="javascript:void(0);" onClick="LogicPay(13,0)" style="padding-top:15px;"><img src="<?=$path?>images/Backbutton.svg" class="img-fluid mx-auto d-block" width="150"></a>
+			</div>
+				
+
+
+				<div class="row" style="padding-top:100px;">
+
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 lang="en">Dispensing cash, please collect your money one bill at a time</h4></div></div>
+
+				</div>
+
+				<div class="row" style="padding-top:40px;">
+
+					<div class="col-md-4"></div>
+
+					<div class="col-md-4">
+
+							<div class="btn_img" style="padding:10px;" onClick="LogicPay(42,0)"><button type="button" class="btn btn-danger btn-lg btn-block" lang="en">Done</button></div>
+
+					</div>
+
+					<div class="col-md-4"></div>
+
+				</div>
+
+				
+
+			</div>
+
+			
+
+	<!--------------------------- ATM OFFLINE --------------------------->
+				
+			<div id="atm_offline"style="display:none;">
+				
+			 
+				
+				
+				
+				<div class="row" style="padding-top:100px;">
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white"><h4 lang="en"> ATM IS OFFLINE </h4></div></div>
+				</div>
+			
+				
+			</div>
+		
+			
+							<!--------------------------- INVALID KEY --------------------------->
+				
+			<div id="atm_inactive"style="display:none;">
+				
+			 
+				
+				<div class="row" style="padding-top:100px;">
+					<div class="col-md-12"><div class="clsPAD30 text-center text-white">
+					
+										<div class="centered"> <h1 style="font-size:150px; color:red; font-family:Verdana, Geneva, sans-serif;"> ! </h1> <br> <h3 lang="en">Sorry! <?=$LIC_KEY?> key is not valid or expired. </h3><br> <br> <h3 lang="en">Please contact support for more help.</h3> </div>
+									
+					
+					</div></div>
+				</div>
+			
+				
+			</div>
+			
+
+	
+
+	</div>	<!--clsWrapper-->
+
+	
+
+<!--<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
+
+	<!--<script src="<?=$path?>jquery.virtual_keyboard.js"></script>-->
+
+	
+
+	<script>
+
+	
+
+	  function openKeyboard(KeyValue)
+
+	  {
+
+	  			//alert(KeyValue);
+
+	  			if(KeyValue == 1)
+
+	  			{
+
+	  						$('input#enter_phone_number').mlKeyboard({layout: 'en_US_phone',enabled: true});
+
+	  									
+
+	  								//	KeyTab(); enabled: true
+
+	  						
+
+	  						$('input#enter_email_address').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_security_code').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_firstname').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_lastname').mlKeyboard({layout: 'en_US',enabled: false});
+	  						
+	  						
+	  						
+	  					
+
+	  			}
+
+	  			else if(KeyValue == 2)
+
+	  			{
+
+	  						$('input#enter_email_address').mlKeyboard({layout: 'en_US',enabled: true});
+
+	  						//KeyTab();
+
+	  						$('input#enter_phone_number').mlKeyboard({layout: 'en_US_phone',enabled: false});
+
+	  						$('input#enter_security_code').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_firstname').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_lastname').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  			}
+
+	  			else if(KeyValue == 3)
+
+	  			{
+
+	  						$('input#enter_firstname').mlKeyboard({layout: 'en_US',enabled: true});
+
+	  						//KeyTab();
+
+	  						$('input#enter_phone_number').mlKeyboard({layout: 'en_US_phone',enabled: false});
+
+	  						$('input#enter_security_code').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_email_address').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_lastname').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  			}
+
+	  			else if(KeyValue == 4)
+
+	  			{
+
+	  						$('input#enter_lastname').mlKeyboard({layout: 'en_US',enabled: true});
+
+	  						//KeyTab();
+
+	  						$('input#enter_phone_number').mlKeyboard({layout: 'en_US_phone',enabled: false});
+
+	  						$('input#enter_security_code').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_firstname').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_email_address').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  			}
+
+	  			else if(KeyValue == 5)
+
+	  			{
+
+	  						$('input#enter_security_code').mlKeyboard({layout: 'en_US',enabled: true});
+
+	  						//KeyTab();
+
+	  						$('input#enter_phone_number').mlKeyboard({layout: 'en_US_phone',enabled: false});
+
+	  						$('input#enter_security_code').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_firstname').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_email_address').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  			}
+
+	  			
+
+	  }
+
+
+	$('#enter_phone_number').bind('textchange', function (event, previousText) {
+									      $('#enter_phone_number').replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+									      alert(previousText);
+									});
+	  
+	  
+	  
+        </script>
+
+
+
+<script>
+	
+	
+//	disp_div('No_Did');
+		
+		
+	$(window).on('load', function()
+		{
+			
+				<?  if($IS_ATM_ACTIVE == 0 ) { ?>   disp_div('atm_inactive'); <? } else { ?>  disp_div('Slide_Home');  <? } ?>
+			
+			
+			$('input#enter_phone_number').mlKeyboard({layout: 'en_US',enabled: false});
+
+				$('input#enter_email_address').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_security_code').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_firstname').mlKeyboard({layout: 'en_US',enabled: false});
+
+	  						$('input#enter_lastname').mlKeyboard({layout: 'en_US',enabled: false});
+
+			
+		});
+		
+		        </script>
+        
+
+        
+
+        
+
+        
+
+        
+
+	
+
+    <!-- Javascript files-->
+
+	<!--<script src="<?=$path?>js/popper.min.js"></script>-->
+
+	<!--<script>window.jQuery || document.write('<script src="<?=$path?>js/jquery.min.js"><\/script>')</script>-->
+
+ <!--   <script src="<?=$path?>js/jquery-1.11.0.min.js"></script>-->
+
+ <!--   <script src="<?=$path?>js/bootstrap.min.js"></script>-->
+
+	<!--<script src="<?=$path?>js/jquery.easing.min.js"></script>-->
+
+</body>
+
+</html>
